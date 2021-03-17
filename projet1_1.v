@@ -27,14 +27,29 @@ Definition TestCor:=cor ctr cfa.
 Compute (red_cbn TestCor). (* true or  false== true*)
 
 (*definition des 1,2,3 et 4*)
-Definition C0:=\f x ~ x.
-Definition C1:=\f x ~ f x.
-Definition C2:=\f x ~ f(f x).
-Definition C3:=\f x ~ f(f(f x)).
-Definition C4:=\f x ~ f(f(f(f x))).
+Definition c0:=\f x ~ x.
+Definition c1:=\f x ~ f x.
+Definition c2:=\f x ~ f(f x).
+Definition c3:=\f x ~ f(f(f x)).
+Definition c4:=\f x ~ f(f(f(f x))).
 
 (*definition des operateur entiers*)
-Definition Csucc := \n~ \f x ~ f(n f x).
-Definition   
+Definition csucc := \n~ \f x ~ f(n f x).
+Definition cplus := \n m~ \ f x ~ n f (m f x).
+Definition cmul:= \n m ~ n (m f).
+Definition ceq0:= \n ~\ x y~ n( \z~ y) x.
+
+(*Test entiers*)
+Definition TestCsucc:= csucc c1.
+Compute (red_cbn TestCsucc). (* 1++ ==2*)
+Definition TestCplus:= cplus c2 c3.
+Compute (red_cbn TestCplus). (* 2+3==5*)
+Definition TestCmul := cmul c2 c3.
+Compute (red_cbn TestCmul). (*2*3==6*)
+Definition TestCeq0tr := ceq0 c0.
+Compute (red_cbn TestCeq0tr).  (* 0==0 -> ctr*)
+Definition TestCeq0fa := ceq0 c1.
+Compute (red_cbn TestCeq0fa). (* 1!=0 -> cfa*)
+
 
 
