@@ -14,16 +14,16 @@ Definition E:=\x~x.
 Definition F:=\y~y.
 (*Test Conditionelle*)
 Definition TestConditionnelle0:= cif ctr E F.
-Compute(red_cbn TestConditionnelle0).
+Compute red_cbn TestConditionnelle0.
 Definition TestConditionnelle1:= cif cfa E F.
-Compute(red_cbn TestConditionnelle1).
+Compute red_cbn TestConditionnelle1.
 (*Test neg, cand et cor*)
 Definition TestNeg:= neg cfa. (* not false==true*)
-Compute (red_cbn TestNeg).
+Compute red_cbn TestNeg.
 Definition TestCand:=cand ctr cfa.
-Compute (red_cbn TestCand). (* true and  false== false*)
+Compute red_cbn TestCand. (* true and  false== false*)
 Definition TestCor:=cor ctr cfa.
-Compute (red_cbn TestCor). (* true or  false== true*)
+Compute red_cbn TestCor. (* true or  false== true*)
 
 
 (*entiers*)
@@ -40,15 +40,15 @@ Definition cmul:= \n m ~ n (m f).
 Definition ceq0:= \n ~\ x y~ n( \z~ y) x.
 (*Test entiers*)
 Definition TestCsucc:= csucc c1.
-Compute (red_cbn TestCsucc). (* 1++ ==2*)
+Compute red_cbn TestCsucc. (* 1++ ==2*)
 Definition TestCplus:= cplus c2 c3.
-Compute (red_cbn TestCplus). (* 2+3==5*)
+Compute red_cbn TestCplus. (* 2+3==5*)
 Definition TestCmul := cmul c2 c3.
-Compute (red_cbn TestCmul). (*2*3==6*)
+Compute red_cbn TestCmul. (*2*3==6*)
 Definition TestCeq0tr := ceq0 c0.
-Compute (red_cbn TestCeq0tr).  (* 0==0 -> ctr*)
+Compute red_cbn TestCeq0tr.  (* 0==0 -> ctr*)
 Definition TestCeq0fa := ceq0 c1.
-Compute (red_cbn TestCeq0fa). (* 1!=0 -> cfa*)
+Compute red_cbn TestCeq0fa. (* 1!=0 -> cfa*)
 
 
 (*Couples*)
@@ -66,8 +66,38 @@ Compute red_cbn (fst coup2).
 Compute red_cbn (snd coup2).
 
 
+(*Structure de choix pas fini*)
+(*definition des injections*)
+Definition inj1 := \a b ~ a x.
+Definition inj2 := \a b ~ b x.
+(* Test inj1 et inj2*)
+Definition TestInj1:=inj1 f g.
+Compute red_cbn TestInj1. (* retour fx*)
+Definition TestInj2:= inj2 f g.
+Compute red_cbn TestInj2. (* retour gx*)
+(*mult test*)
+Definition double:= cmul c2 c3.
+Definition negative:= neg ctr.
+Definition doubleTest:= inj1 double negative.
+Compute red_cbn doubleTest.
+Definition negativeTest:= inj2 double negative.
+Compute red_cbn negativeTest.
+(*donnée optionnelle*)
+Definition some:= csucc x.
+Compute red_cbn some.
+Definition none:=c0.
+Definition osucc1:=inj1 some none.
+Compute red_cbn osucc1.
+Definition osucc2:=inj2 some none.
+Compute red_cbn osucc2.
 
-(*Structure de choix*)
+
+(*Prédécesseur*)
+(* Definition csucc:= \n~\f x~f(n f x).*)
+Definition iter:= \n g x~ n g x.
+
+
+(*Factorielle*)
 
 
 
