@@ -68,35 +68,37 @@ Compute red_cbn (snd coup2).
 
 (*Structure de choix pas fini*)
 (*definition des injections*)
-Definition inj1 := \a b ~ a x.
-Definition inj2 := \a b ~ b x.
+Definition inj1 := \x~\a b ~ a x.
+Definition inj2 := \x~\a b ~ b x.
 (* Test inj1 et inj2*)
 Definition TestInj1:=inj1 f g.
-Compute red_cbn TestInj1. (* retour fx*)
+Compute red_cbn TestInj1. (* retour gf*)
 Definition TestInj2:= inj2 f g.
-Compute red_cbn TestInj2. (* retour gx*)
-(*mult test*)
+Compute red_cbn TestInj2. (* retour bf*)
+(*
 Definition double:= cmul c2 c3.
 Definition negative:= neg ctr.
 Definition doubleTest:= inj1 double negative.
 Compute red_cbn doubleTest.
 Definition negativeTest:= inj2 double negative.
-Compute red_cbn negativeTest.
+Compute red_cbn negativeTest. 
+
 (*donnée optionnelle*)
-Definition some:= csucc x.
+
+Definition some:= inj1 f.
 Compute red_cbn some.
 Definition none:=c0.
-Definition osucc1:=inj1 some none.
-Compute red_cbn osucc1.
+Definition osucc:=some none.
+Compute red_cbn osucc.
 Definition osucc2:=inj2 some none.
 Compute red_cbn osucc2.
-
+*)
 
 (*Prédécesseur*)
 (* Definition csucc:= \n~\f x~f(n f x).*)
 Definition iter:= \n g x~ n g x.
-
-
+Definition cpred:= \n~\f~\x~n (\g~\h~h (g f)) (\u~ x)(\u~u).
+Compute red_cbn (cpred n).
 (*Factorielle*)
 
 
