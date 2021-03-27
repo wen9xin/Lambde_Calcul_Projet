@@ -95,11 +95,15 @@ Compute red_cbn osucc2.
 *)
 
 (*Prédécesseur*)
-(* Definition csucc:= \n~\f x~f(n f x).*)
-Definition iter:= \n g x~ n g x.
-Definition cpred:= \n~\f~\x~n (\g~\h~h (g f)) (\u~ x)(\u~u).
-Compute red_cbn (cpred n).
+(* Definition*)
+Definition succ1:= (csucc n).
+Definition succpair:= \p ~((\n~(cpl n (csucc n)))(snd p)).
+Definition cpred:= \n~ fst ( n succpair (cpl c0 c0)).
+Definition testcPred:= cpred c2. (*c2-1==c1*)
+Compute red_cbn  testcPred.
+
 (*Factorielle*)
+Definition succf:=\p~p(\x n~( cpl (f x n) (csucc n))).
 
 
 
