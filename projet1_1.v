@@ -103,7 +103,13 @@ Definition testcPred:= cpred c2. (*c2-1==c1*)
 Compute red_cbn  testcPred.
 
 (*Factorielle*)
-Definition succf:=\p~p(\x n~( cpl (f x n) (csucc n))).
+Definition est0:= \n~n(\x~cfa)ctr.
+Definition fac1:= \f n~(est0 n c1 ( cmul  n  f(cpred n))).
+Definition auto:= \x~x x.
+Definition Y:= \f~auto (\x~f(auto x)).
+
+Definition fac :=Y fac1.
+Compute red_cbn fac c0.
 
 
 
