@@ -48,21 +48,25 @@ Definition c3:cnat:=fun f x => f(f(f x)).
 Definition c4:cnat:=fun f x => f(f(f(f x))).
 
 (* fonction successeur *)
+(* n avec une fois de ++ *)
 Definition csucc:cnat->cnat := fun n => fun f x => f(n f x).
 Definition TestCsucc:= csucc c1.
 Compute  TestCsucc. (* 1++ ==2*)
 
 (* fonction addition *)
+(* m avec n fois de ++ *)
 Definition cplus:cnat->cnat->cnat := fun n m => fun f x => n f (m f x).
 Definition TestCplus:= cplus c2 c3.
 Compute  TestCplus. (* 2+3==5*)
 
 (* fonction multiplication *)
+(*m avec n fois de +m *)
 Definition cmul:cnat->cnat->cnat := fun n m=> fun f => n (m f).
 Definition TestCmul := cmul c2 c3.
 Compute  TestCmul. (*2*3==6*)
 
 (* fonction egale 0 *)
+(* utilise n pour choisir x ou y sur (\z~y)x *)
 Definition ceq0:cnat->cbool :=fun n => fun x y => n( fun z=> y) x.
 Definition TestCeq0tr := ceq0 c0.
 Compute  TestCeq0tr.  (* 0==0 -> ctr*)

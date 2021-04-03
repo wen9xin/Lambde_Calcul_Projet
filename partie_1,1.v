@@ -42,23 +42,28 @@ Definition c3:=\f x ~ f(f(f x)).
 Definition c4:=\f x ~ f(f(f(f x))).
 
 (*operateur entiers*)
+(* n avec une fois de ++ *)
 Definition csucc := \n~ \f x ~ f(n f x).  (* operation successeur (n+1) *)
 Definition TestCsucc:= csucc c1.
 Compute red_cbn TestCsucc. (* 1++ ==2*)
 
-Definition cplus := \n m~ \ f x ~ n f (m f x). (* operation add *)
+(* m avec n fois de ++ *)
+Definition cplus := \n m~ \ f x ~  n f (m f x). (* operation add *)
 Definition TestCplus:= cplus c2 c3.
-Compute red_cbn TestCplus. (* 2+3==5*)
+Compute show_cbn TestCplus. (* 2+3==5*)
 
+(*m avec n fois de +m *)
 Definition cmul:= \n m f~ n (m f).  (* operation mult *)
 Definition TestCmul := cmul c2 c3.
 Compute red_cbn TestCmul. (*2*3==6*)
 
+(* utilise n pour choisir x ou y sur (\z~y)x *)
 Definition ceq0:= \n ~\ x y~ n( \z~ y) x. (* codage de ceq0() teste à zero *)
 Definition TestCeq0tr := ceq0 c0.
-Compute red_cbn TestCeq0tr.  (* 0==0 -> ctr*)
+Compute show_cbn TestCeq0tr.  (* 0==0 -> ctr*)
 Definition TestCeq0fa := ceq0 c1.
-Compute red_cbn TestCeq0fa. (* 1!=0 -> cfa*)
+Compute show_cbn TestCeq0fa. (* 1!=0 -> cfa*)
+
 
 
 
@@ -78,7 +83,7 @@ Compute red_cbn (snd coup). (*λ x y · y*)
 
 (*definition des injections*)
 Definition inj1 := \x a b ~ a x.  (* a -> somme x qui a a et b *)
-Definition inj2 := \x a b ~ b x.  (* b -> somme x qui a a b *)
+Definition inj2 := \x a b ~ b x.  (* b -> somme x qui a a et b *)
 (* Test inj1 et inj2*)
 Definition TestInj1:=inj1 f g.
 Compute red_cbn TestInj1. (* λ b · g f*)
@@ -86,44 +91,37 @@ Definition TestInj2:= inj2 f g.
 Compute red_cbn TestInj2. (*λ b · b f*)
 
 
-(*
-(*donnée optionnelle*)
-Definition some:= csucc .
-Compute red_cbn (some c1).
-Definition none:= some c0.
-Compute red_cbn (none c1).
-Definition coupInj:=cpl inj1 inj2.
-Definition osucc1:=\x~(inj1(some x) none).
-
-
-Compute red_cbn (osucc1 ).   (*λ x b a b · a (x a b) *)
-Compute red_cbn (osucc1 c0). (* λ b x a · x a *)
-Compute red_cbn (osucc1 c1). (* λ b x a · x (x a)*)
-Compute red_cbn (osucc1 c2). (*λ b x a · x (x (x a))*)
-
-
-Definition osucc2:=\x~(inj2(some x) none).
-Compute red_cbn (osucc2 ).   (*λ x b · b (λ f a · f (x f a)) *)
-Compute red_cbn (osucc2 c0 ). (* λ b · b (λ f x · f x) *)
-Compute red_cbn (osucc2 c1). (* λ b · b (λ f x · f (f x)))*)
-Compute red_cbn (osucc2 c2). (*λ b · b (λ f x · f (f (f x)))*)
-*)
 
 (*Prédécesseur*)
 
+
+(* codage d'operation Iteration, i'operation applique une fonction g
+   n fois sur un nombre x*)   
+Definition iter:= \n g x ~ n g x.
+(* succCouple prendre an couple et renvoyer un couple de (x, y+1)
+   on va utiliser succCouple pour calculer le predecesseur *)
+Definition succCouple:=\c~ cpl (snd c) (csucc (snd c )).
+(* cpred calcule le predecesseur d'un nombre n, pour calculer le pred
+   on itére n-1 fois de zero calculant le successeur. on va utiliser
+   le fonction iter pour appliquer la fonction succCouple sur une cople (0, 0) n fois
+   comme ca le resulta sera le fst du couple renvoyée *)
+Definition cpred:=\n~ fst(iter n succCouple(cpl c0 c0)).
+
+(* 
 (* succpair prendre un couple(0,0), applique csucc pour
-iterateur n fois et renvoyer un couple de (n, n+1)*)   
-Definition succpair:= \p ~((\n~(cpl n (csucc n)))(snd p)).
+iterateur n fois et renvoyer un couple de (n, n+1)*)
+Definition succCouple:= \p ~((\n~(cpl n (csucc n)))(snd p)).
 (*on va utiliser cpred pour calculer le predecesseur *)
-Definition cpredW:= \n~ fst ( n succpair (cpl c0 c0)).
-Definition testcPredW:= cpredW c2. (*c2-1==c1*)
-Compute red_cbn  testcPredW.
+Definition cpred:= \n~ fst ( n succCouple (cpl c0 c0)). *)
+
+Definition testcPred:= cpred c2. (*c2-1==c1*)
+Compute red_cbn  testcPred.
 
 (*Factorielle*)
 (* Y est le point fixe de l’op´eration f → fac’ f *)
 Definition Y:= \f~(\x ~f(x x))(\x~f(x x)).
 (* Fonc utilise X mult X-1 jasqu'a c1 *)
-Definition Fonc := \f·\n·cif (ceq0 n) c1 (cmul n (f (cpredW n))).
+Definition Fonc := \f·\n·cif (ceq0 n) c1 (cmul n (f (cpred n))).
 (*  l’appel recursif *)
 Definition Fact := Y Fonc.
 Compute red_cbn (Fact c3 ).
